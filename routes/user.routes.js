@@ -8,7 +8,8 @@ const router = express.Router();
 const { body } = require('express-validator');
 
 // Import user controller to handle user-related logic
-const userController = require('../controllers/user.controller')
+const userController = require('../controllers/user.controller');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 
 // Route to register a new user
@@ -21,7 +22,13 @@ router.post('/register', [
     body('password').isLength({ min: 6 }).withMessage('password must be at least 5 charachters long')
 ], userController.registerUser)
 
+//Route to login
+router.post('/login',[
+    body('email').isEmail().withMessage('Invalid Email'),
+    body('password').isLength({min:6}).withMessage('Password Invalid')
+], userController.loginUser)
 
+router.get('/profile',authMiddleware.authUser,userController.getUserProfile);
 
 // Export the router to be used in other parts of the app
 module.exports = router;
