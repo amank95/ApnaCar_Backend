@@ -16,6 +16,7 @@ const cookieParser = require('cookie-parser');
 // Import the MongoDB connection function
 const connectToDb = require('./db/db');
 const userRoutes = require('./routes/user.routes');
+const captainRoutes = require('./routes/captain.routes');
 
 // Enable CORS for all routes
 app.use(cors());
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 });
 
 app.use('/users', userRoutes);
+app.use('/captains',captainRoutes);
 
 // Export the Express app for use in other files (like server.js)
 module.exports = app;

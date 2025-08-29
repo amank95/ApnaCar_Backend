@@ -30,5 +30,8 @@ router.post('/login',[
 
 router.get('/profile',authMiddleware.authUser,userController.getUserProfile);
 
+router.get('/logout',authMiddleware.authUser,userController.logoutUser);
+
+
 // Export the router to be used in other parts of the app
 module.exports = router;

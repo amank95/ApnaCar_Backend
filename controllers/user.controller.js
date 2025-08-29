@@ -1,6 +1,7 @@
 
 // Import user model for database operations
 const userModel = require('../models/user.model');
+const blacklistTokenModel = require('../models/blacklistToken.model')
 
 // Import user service for business logic
 const userService = require('../services/user.service');
@@ -21,6 +22,11 @@ module.exports.registerUser = async (req, res, next) => {
    console.log(req.body);
    // Extract user details from request body
    const { fullname, email, password } = req.body;
+
+   const isUserAlreadyExist = await userModel.findOne({email});
+   if(isUserAlreadyExist){
+      return res.status(400).json({message:'User Already exist'});
+   }
 
    // Hash the user's password before saving (assuming hashPassword is defined in userModel)
    const hashedPassword = await userModel.hashPassword(password);
@@ -71,4 +77,12 @@ module.exports.loginUser = async(req,res,next)=>{
 
 module.exports.getUserProfile = async(req,res,next)=>{
    res.status(200).json(req.user)
+}
+
+module.exports.logoutUser = async(req,res,next)=>{
+   res.clearCookie('token');
+
+   const token = req.cookies.token || req.header.authorization.split()[1];
+   await blacklistTokenModel.create({token})
+   res.status(200).json({message:'Logged out'});
 }
